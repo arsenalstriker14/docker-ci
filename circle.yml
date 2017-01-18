@@ -1,13 +1,41 @@
-# The deployment section should be excluded until
-# it is explicitly included in module 5
-# disregard this line (test amendment)
+machine:
+
+  services:
+
+  - docker
+
+
+dependencies:
+
+  override:
+
+    - docker info
+
+    - docker build -t arsenalstriker14/docker-ci .
+
 
 deployment:
- dockerhub:
-   branch: master
-   commands:
-     - $DOCKER_HUB_TRIGGER
+
+  hub:
+
+    branch: master
+
+    commands:
+
+     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+
+     - docker push arsenalstriker14/docker-ci
+
+
+notify:
+
+  webhooks:
+
+    - url: https://registry.hub.docker.com/u/arsenalstriker14/docker-ci/trigger/2d6dda49-4286-4940-ba79-874f91671903/
+
 
 test:
-  override:    
+
+  override:
+
     - mocha
